@@ -2,7 +2,7 @@
  * Configuración de la API
  */
 export const API_CONFIG = {
-  BASE_URL: 'http://10.0.2.2:3000', // Para emulador Android
+  BASE_URL: 'https://app-cultural-606100971917.southamerica-east1.run.app', // Para emulador Android
   ENDPOINTS: {
     // Auth endpoints
     LOGIN: '/auth/login',
