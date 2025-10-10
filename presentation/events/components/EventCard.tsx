@@ -37,28 +37,55 @@ export const EventCard = ({ event }: Props) => {
     <ThemedView
       style={{
         flex: 1,
-        margin: 3,
-        borderRadius: 8,
+        margin: 6,
+        borderRadius: 12,
         overflow: 'hidden',
-        padding: 5,
+        padding: 8,
       }}
       lightColor="#F9F9F9"
       darkColor="#2A2A2E"
     >
       <TouchableOpacity onPress={() => router.push(`/event/${event.id}` as any)}>
-        <Image
-          source={{ uri: event.cover_image_url }}
-          style={{ 
-            flex: 1, 
-            height: 160, 
-            width: '100%',
-            borderRadius: 5,
-          }}
-          resizeMode="cover"
-        />
+        <ThemedView style={{ position: 'relative' }}>
+          <Image
+            source={{ uri: event.cover_image_url }}
+            style={{ 
+              flex: 1, 
+              height: 160, 
+              width: '100%',
+              borderRadius: 8,
+            }}
+            resizeMode="cover"
+          />
+          
+          {/* Chip de precio en esquina superior derecha */}
+          <ThemedView
+            style={{
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              borderRadius: 12,
+              paddingHorizontal: 8,
+              paddingVertical: 4,
+              backgroundColor: event.base_ticket_price === 0 
+                ? 'rgba(76, 175, 80, 0.85)' // Verde semi-transparente
+                : 'rgba(33, 150, 243, 0.85)', // Azul semi-transparente
+            }}
+          >
+            <ThemedText
+              style={{ 
+                fontSize: 12,
+                fontWeight: '600',
+                color: '#FFFFFF',
+              }}
+            >
+              {formatPrice(event.base_ticket_price)}
+            </ThemedText>
+          </ThemedView>
+        </ThemedView>
 
         <ThemedView 
-          style={{ padding: 8 }}
+          style={{ padding: 12 }}
           lightColor="#F9F9F9"
           darkColor="#2A2A2E"
         >
@@ -67,7 +94,7 @@ export const EventCard = ({ event }: Props) => {
             style={{ 
               textAlign: 'center',
               fontWeight: 'bold',
-              marginBottom: 8,
+              marginBottom: 10,
               fontSize: 16,
             }}
             lightColor="#1A1A1A"
@@ -82,7 +109,7 @@ export const EventCard = ({ event }: Props) => {
               textAlign: 'center',
               fontSize: 13,
               fontWeight: '500',
-              marginBottom: 4,
+              marginBottom: 6,
             }}
             lightColor="#FF8C00"
             darkColor="#FFB347"
@@ -95,24 +122,11 @@ export const EventCard = ({ event }: Props) => {
             style={{ 
               textAlign: 'center',
               fontSize: 12,
-              marginBottom: 6,
             }}
             lightColor="#666666"
             darkColor="#AAAAAA"
           >
             {event.event_location_name}
-          </ThemedText>
-          
-          <ThemedText
-            style={{ 
-              textAlign: 'center',
-              fontSize: 16,
-              fontWeight: '600',
-            }}
-            lightColor={event.base_ticket_price === 0 ? '#4CAF50' : '#2196F3'}
-            darkColor={event.base_ticket_price === 0 ? '#66BB6A' : '#64B5F6'}
-          >
-            {formatPrice(event.base_ticket_price)}
           </ThemedText>
         </ThemedView>
       </TouchableOpacity>
