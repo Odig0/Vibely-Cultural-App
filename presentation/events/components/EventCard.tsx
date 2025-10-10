@@ -14,7 +14,7 @@ export const EventCard = ({ event }: Props) => {
     if (price === 0) {
       return 'GRATIS';
     }
-    return `$${price}`;
+    return `Bs ${price}`;
   };
 
   const formatDate = (dateString: string) => {
@@ -43,7 +43,7 @@ export const EventCard = ({ event }: Props) => {
         padding: 8,
       }}
       lightColor="#F9F9F9"
-      darkColor="#2A2A2E"
+      darkColor="#20232A"
     >
       <TouchableOpacity onPress={() => router.push(`/event/${event.id}` as any)}>
         <ThemedView style={{ position: 'relative' }}>
@@ -51,7 +51,7 @@ export const EventCard = ({ event }: Props) => {
             source={{ uri: event.cover_image_url }}
             style={{ 
               flex: 1, 
-              height: 160, 
+              height: 180, 
               width: '100%',
               borderRadius: 8,
             }}
@@ -62,8 +62,8 @@ export const EventCard = ({ event }: Props) => {
           <ThemedView
             style={{
               position: 'absolute',
-              top: 0,
-              right: 0,
+              top: -1,
+              right: -1,
               borderRadius: 12,
               paddingHorizontal: 8,
               paddingVertical: 4,
@@ -87,7 +87,7 @@ export const EventCard = ({ event }: Props) => {
         <ThemedView 
           style={{ padding: 12 }}
           lightColor="#F9F9F9"
-          darkColor="#2A2A2E"
+          darkColor="#1A1A1A"
         >
           <ThemedText
             numberOfLines={2}
