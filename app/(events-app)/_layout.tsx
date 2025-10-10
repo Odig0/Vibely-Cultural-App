@@ -7,7 +7,7 @@ import { useThemeColor } from '@/presentation/theme/hooks/use-theme-color';
 import { Ionicons } from '@expo/vector-icons';
 import { Stack } from 'expo-router';
 import { useState } from 'react';
-import { View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 
 export default function EventsAppLayout() {
   const { user } = useAuthStore();
@@ -35,6 +35,27 @@ export default function EventsAppLayout() {
     }
   };
 
+  const handleSearchPress = () => {
+    // Por ahora solo un console.log, después implementaremos la búsqueda
+    console.log('Botón de búsqueda del header presionado');
+  };
+
+  const HeaderRight = () => (
+    <TouchableOpacity
+      onPress={handleSearchPress}
+      style={{
+        padding: 8,
+        marginRight: 10,
+      }}
+    >
+      <Ionicons 
+        name="search" 
+        size={24} 
+        color={iconColor}
+      />
+    </TouchableOpacity>
+  );
+
   return (
     <ThemedView style={{ flex: 1 }}>
       <Stack
@@ -46,7 +67,8 @@ export default function EventsAppLayout() {
           name="(home)" 
           options={{ 
             headerTitle: () => <HeaderTitle />,
-            headerLeft: () => <LogoutIconButton />
+            headerLeft: () => <LogoutIconButton />,
+            headerRight: () => <HeaderRight />
           }} 
         />
       </Stack>

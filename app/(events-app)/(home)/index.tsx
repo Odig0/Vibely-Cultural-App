@@ -24,6 +24,8 @@ const HomeScreen = () => {
     setSelectedCategory(categoryId);
   };
 
+
+
   // Filtrar eventos por categoría
   const filteredEvents = selectedCategory === 'all' 
     ? events || []
