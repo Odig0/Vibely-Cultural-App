@@ -1,5 +1,7 @@
 import CategoryFilter from '@/presentation/events/components/CategoryFilter'
 import EventList from '@/presentation/events/components/EventList'
+import HomeHeader from '@/presentation/events/components/HomeHeader'
+import SearchBar from '@/presentation/events/components/SearchBar'
 import { useEvents } from '@/presentation/events/hooks/useEvents'
 import { ThemedText } from '@/presentation/theme/components/ThemedText'
 import { ThemedView } from '@/presentation/theme/components/ThemedView'
@@ -9,6 +11,7 @@ import { ActivityIndicator, View } from 'react-native'
 const HomeScreen = () => {
   const { data: events, isLoading, error } = useEvents();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   // Categorías basadas en tu API
   const categories = [
@@ -24,14 +27,23 @@ const HomeScreen = () => {
     setSelectedCategory(categoryId);
   };
 
-
-
-  // Filtrar eventos por categoría
-  const filteredEvents = selectedCategory === 'all' 
-    ? events || []
-    : (events || []).filter(event => 
-        event.categories.some(cat => cat.name.toLowerCase() === selectedCategory.toLowerCase())
-      );
+  // Filtrar eventos por categoría y búsqueda
+  const filteredEvents = (events || [])
+    .filter(event => {
+      // Filtrar por categoría
+      if (selectedCategory !== 'all') {
+        return event.categories.some(cat => cat.name.toLowerCase() === selectedCategory.toLowerCase());
+      }
+      return true;
+    })
+    .filter(event => {
+      // Filtrar por búsqueda
+      if (searchQuery.trim() === '') return true;
+      const query = searchQuery.toLowerCase();
+      return event.title.toLowerCase().includes(query) ||
+             event.event_location_name.toLowerCase().includes(query) ||
+             event.categories.some(cat => cat.name.toLowerCase().includes(query));
+    });
 
   if (isLoading) {
     return (
@@ -53,7 +65,13 @@ const HomeScreen = () => {
   }
 
   return (
-    <ThemedView style={{ flex: 1 }}>
+    <ThemedView style={{ flex: 1 }} lightColor="#FFFFFF" darkColor="#000000">
+      {/* Header con saludo, logout y notificaciones */}
+      <HomeHeader />
+
+      {/* Barra de búsqueda */}
+      <SearchBar value={searchQuery} onChangeText={setSearchQuery} />
+
       {/* Filtro de categorías */}
       <CategoryFilter 
         categories={categories}
@@ -63,8 +81,8 @@ const HomeScreen = () => {
 
       {/* Header con título de sección */}
       <View style={{ paddingHorizontal: 20, paddingBottom: 10 }}>
-        <ThemedText style={{ fontFamily: 'Kanit-Regular', fontSize: 18 }}>
-          Eventos disponibles:
+        <ThemedText style={{ fontSize: 22, fontWeight: 'bold' }}>
+          Eventos disponibles
         </ThemedText>
       </View>
 

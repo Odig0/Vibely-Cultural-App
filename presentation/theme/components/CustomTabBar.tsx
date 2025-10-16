@@ -2,7 +2,7 @@ import { ThemedView } from '@/presentation/theme/components/ThemedView';
 import { useThemeColor } from '@/presentation/theme/hooks/use-theme-color';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, Platform } from 'react-native';
 
 interface TabItem {
   id: string;
@@ -34,7 +34,8 @@ const CustomTabBar = ({ activeTab, onTabPress }: Props) => {
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'center',
-        paddingVertical: 12,
+        paddingTop: 12,
+        paddingBottom: Platform.OS === 'android' ? 15 : 20,
         paddingHorizontal: 10,
         borderTopWidth: 0.5,
         borderTopColor: useThemeColor({ light: '#E5E5E7', dark: '#38383A' }, 'text'),

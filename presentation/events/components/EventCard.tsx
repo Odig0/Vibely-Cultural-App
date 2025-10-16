@@ -36,11 +36,11 @@ export const EventCard = ({ event }: Props) => {
   return (
     <ThemedView
       style={{
-        flex: 1,
-        margin: 6,
-        borderRadius: 12,
+        marginHorizontal: 15,
+        marginVertical: 10,
+        borderRadius: 16,
         overflow: 'hidden',
-        padding: 8,
+        padding: 0,
       }}
       lightColor="#F9F9F9"
       darkColor="#20232A"
@@ -50,10 +50,10 @@ export const EventCard = ({ event }: Props) => {
           <Image
             source={{ uri: event.cover_image_url }}
             style={{ 
-              flex: 1, 
-              height: 180, 
+              height: 280, 
               width: '100%',
-              borderRadius: 8,
+              borderTopLeftRadius: 16,
+              borderTopRightRadius: 16,
             }}
             resizeMode="cover"
           />

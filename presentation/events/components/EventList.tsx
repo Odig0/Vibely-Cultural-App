@@ -28,7 +28,7 @@ const EventList = ({ events, loadNextPage }: Props) => {
   return (
     <FlatList
       data={events}
-      numColumns={2}
+      numColumns={1}
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => <EventCard event={item} />}
       onEndReached={loadNextPage}
