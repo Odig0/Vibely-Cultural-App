@@ -8,9 +8,10 @@ import { EventCard } from './EventCard';
 interface Props {
   events: Event[];
   loadNextPage?: () => void;
+  ListHeaderComponent?: React.ComponentType<any> | React.ReactElement | null;
 }
 
-const EventList = ({ events, loadNextPage }: Props) => {
+const EventList = ({ events, loadNextPage, ListHeaderComponent }: Props) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const queryClient = useQueryClient();
 
@@ -34,6 +35,7 @@ const EventList = ({ events, loadNextPage }: Props) => {
       onEndReached={loadNextPage}
       onEndReachedThreshold={0.8}
       showsVerticalScrollIndicator={false}
+      ListHeaderComponent={ListHeaderComponent}
       refreshControl={
         <RefreshControl refreshing={isRefreshing} onRefresh={onPullToRefresh} />
       }

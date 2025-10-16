@@ -26,6 +26,13 @@ export default function EventsAppLayout() {
             headerShown: false
           }} 
         />
+        <Stack.Screen 
+          name="event/[id]" 
+          options={{ 
+            headerShown: false,
+            presentation: 'card'
+          }} 
+        />
       </Stack>
       
       <CustomTabBar 

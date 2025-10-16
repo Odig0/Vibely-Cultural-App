@@ -3,6 +3,12 @@ export interface EventCategory {
   name: string;
 }
 
+export interface ArtistSocialLinks {
+  instagram?: string;
+  facebook?: string;
+  twitter?: string;
+}
+
 export interface Event {
   id: string;
   title: string;
@@ -25,6 +31,7 @@ export interface Event {
   tickets_sold: number;
   points_revenue: number;
   categories: EventCategory[];
+  artist_social_links?: ArtistSocialLinks;
 }
 
 export interface EventsResponse {

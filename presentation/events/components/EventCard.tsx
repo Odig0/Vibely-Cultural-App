@@ -34,18 +34,20 @@ export const EventCard = ({ event }: Props) => {
   };
 
   return (
-    <ThemedView
-      style={{
-        marginHorizontal: 15,
-        marginVertical: 10,
-        borderRadius: 16,
-        overflow: 'hidden',
-        padding: 0,
-      }}
-      lightColor="#F9F9F9"
-      darkColor="#20232A"
+    <TouchableOpacity 
+      onPress={() => router.push(`/event/${event.id}` as any)}
+      activeOpacity={0.8}
     >
-      <TouchableOpacity onPress={() => router.push(`/event/${event.id}` as any)}>
+      <ThemedView
+        style={{
+          marginHorizontal: 15,
+          marginVertical: 10,
+          borderRadius: 16,
+          overflow: 'hidden',
+        }}
+        lightColor="#F9F9F9"
+        darkColor="#1A1A1A"
+      >
         <ThemedView style={{ position: 'relative' }}>
           <Image
             source={{ uri: event.cover_image_url }}
@@ -69,7 +71,7 @@ export const EventCard = ({ event }: Props) => {
               paddingVertical: 4,
               backgroundColor: event.base_ticket_price === 0 
                 ? 'rgba(76, 175, 80, 0.85)' // Verde semi-transparente
-                : 'rgba(33, 150, 243, 0.85)', // Azul semi-transparente
+                : 'rgba(255, 140, 0, 0.85)', // Naranja semi-transparente
             }}
           >
             <ThemedText
@@ -129,7 +131,7 @@ export const EventCard = ({ event }: Props) => {
             {event.event_location_name}
           </ThemedText>
         </ThemedView>
-      </TouchableOpacity>
-    </ThemedView>
+      </ThemedView>
+    </TouchableOpacity>
   );
 };

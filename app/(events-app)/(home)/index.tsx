@@ -15,11 +15,11 @@ const HomeScreen = () => {
 
   // Categorías basadas en tu API
   const categories = [
-    { id: 'all', name: 'Todas las fechas', color: 'gray' as const },
+    { id: 'all', name: 'Todos los eventos', color: 'orange' as const },
     { id: 'tecnologia', name: 'Tecnología', color: 'orange' as const },
-    { id: 'arte', name: 'Arte', color: 'purple' as const },
+    { id: 'arte', name: 'Arte', color: 'orange' as const },
     { id: 'musica', name: 'Música', color: 'orange' as const },
-    { id: 'cine', name: 'Cine', color: 'purple' as const },
+    { id: 'cine', name: 'Cine', color: 'orange' as const },
     { id: 'fiesta', name: 'Fiesta', color: 'orange' as const },
   ];
 
@@ -48,7 +48,7 @@ const HomeScreen = () => {
   if (isLoading) {
     return (
       <ThemedView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color="#007AFF" />
+        <ActivityIndicator size="large" color="#060707ff" />
         <ThemedText style={{ marginTop: 10 }}>Cargando eventos...</ThemedText>
       </ThemedView>
     );
@@ -79,16 +79,18 @@ const HomeScreen = () => {
         onCategoryPress={handleCategoryPress}
       />
 
-      {/* Header con título de sección */}
-      <View style={{ paddingHorizontal: 20, paddingBottom: 10 }}>
-        <ThemedText style={{ fontSize: 22, fontWeight: 'bold' }}>
-          Eventos disponibles
-        </ThemedText>
-      </View>
-
-      {/* Lista de eventos */}
-      <View style={{ flex: 1, paddingHorizontal: 10 }}>
-        <EventList events={filteredEvents} />
+      {/* Lista de eventos con header */}
+      <View style={{ flex: 1 }}>
+        <EventList 
+          events={filteredEvents}
+          ListHeaderComponent={
+            <View style={{ paddingHorizontal: 22, paddingTop: 20, paddingBottom: 5 }}>
+              <ThemedText style={{ fontSize: 25, fontWeight: 'bold' }}>
+                Eventos disponibles :
+              </ThemedText>
+            </View>
+          }
+        />
       </View>
     </ThemedView>
   )

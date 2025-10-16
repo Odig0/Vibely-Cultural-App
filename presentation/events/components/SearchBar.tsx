@@ -10,9 +10,9 @@ interface SearchBarProps {
 }
 
 const SearchBar = ({ value, onChangeText, placeholder = 'Buscar eventos...' }: SearchBarProps) => {
-  const borderColor = useThemeColor({ light: '#CCCCCC', dark: '#555555' }, 'text');
+  const borderColor = useThemeColor({ light: '#CCCCCC', dark: '#404040' }, 'text');
   const textColor = useThemeColor({ light: '#000000', dark: '#FFFFFF' }, 'text');
-  const iconColor = useThemeColor({ light: '#666666', dark: '#999999' }, 'text');
+  const iconColor = useThemeColor({ light: '#666666', dark: '#AAAAAA' }, 'text');
 
   return (
     <View style={[styles.searchContainer, { borderColor }]}>
@@ -35,18 +35,18 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     borderWidth: 1.5,
     marginHorizontal: 20,
-    marginTop: 20,
-    marginBottom: 15,
+    marginTop: -5,
+    marginBottom: 18,
     borderRadius: 30,
     paddingHorizontal: 15,
-    paddingVertical: 10,
+    paddingVertical: 8,
   },
   searchIcon: {
     marginRight: 10,
   },
   searchInput: {
     flex: 1,
-    fontSize: 15,
+    fontSize: 14,
   },
 });
 

@@ -50,7 +50,11 @@ const CategoryFilter = ({ categories, selectedCategory, onCategoryPress }: Props
   };
 
   return (
-    <ThemedView style={{ paddingVertical: 15 }}>
+    <ThemedView 
+      style={{ paddingTop: 0, paddingBottom: 0, backgroundColor: '#1A1A1A' }}
+      lightColor="#2A2A2A"
+      darkColor="#1A1A1A"
+    >
       <ScrollView 
         horizontal 
         showsHorizontalScrollIndicator={false}
