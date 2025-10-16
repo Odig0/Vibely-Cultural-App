@@ -94,7 +94,7 @@ export const EventCard = ({ event }: Props) => {
           <ThemedText
             numberOfLines={2}
             style={{ 
-              textAlign: 'center',
+              textAlign: 'left',
               fontWeight: 'bold',
               marginBottom: 10,
               fontSize: 16,
@@ -108,7 +108,7 @@ export const EventCard = ({ event }: Props) => {
           <ThemedText
             numberOfLines={1}
             style={{ 
-              textAlign: 'center',
+              textAlign: 'left',
               fontSize: 13,
               fontWeight: '500',
               marginBottom: 6,
@@ -122,7 +122,7 @@ export const EventCard = ({ event }: Props) => {
           <ThemedText
             numberOfLines={1}
             style={{ 
-              textAlign: 'center',
+              textAlign: 'left',
               fontSize: 12,
             }}
             lightColor="#666666"
