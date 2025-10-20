@@ -1,22 +1,26 @@
 import { useEventById } from '@/presentation/events/hooks/useEventById';
+import { useFavorites } from '@/presentation/favorites/hooks/useFavorites';
 import { ThemedText } from '@/presentation/theme/components/ThemedText';
 import { ThemedView } from '@/presentation/theme/components/ThemedView';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import React from 'react';
 import {
-    ActivityIndicator,
-    Image,
-    Linking,
-    ScrollView,
-    StyleSheet,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Image,
+  Linking,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 const EventDetailScreen = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data: event, isLoading, error } = useEventById(id || '');
+  const { toggleFavorite, isFavorite, isSaving } = useFavorites();
+
+  const isEventFavorite = id ? isFavorite(id) : false;
 
   const formatPrice = (price: number) => {
     if (price === 0) {
@@ -92,7 +96,7 @@ const EventDetailScreen = () => {
           <Image
             source={{ uri: event.cover_image_url }}
             style={styles.coverImage}
-            resizeMode="contain"
+            resizeMode="cover"
           />
           
           {/* Botón de regreso */}
@@ -103,47 +107,53 @@ const EventDetailScreen = () => {
             <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
           </TouchableOpacity>
 
-          {/* Chip de precio */}
-          <View
-            style={[
-              styles.priceChip,
-              {
-                backgroundColor:
-                  event.base_ticket_price === 0
-                    ? 'rgba(76, 175, 80, 0.9)'
-                    : 'rgba(255, 140, 0, 0.9)',
-              },
-            ]}
-          >
-            <ThemedText style={styles.priceText}>
-              {formatPrice(event.base_ticket_price)}
-            </ThemedText>
+          {/* Botones superiores derecha */}
+          <View style={styles.topRightButtons}>
+            <TouchableOpacity style={styles.iconButton}>
+              <Ionicons name="share-outline" size={24} color="#FFFFFF" />
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.iconButton}
+              onPress={() => id && toggleFavorite(id)}
+              disabled={isSaving}
+            >
+              <Ionicons 
+                name={isEventFavorite ? "heart" : "heart-outline"} 
+                size={24} 
+                color={isEventFavorite ? "#FF8C00" : "#FFFFFF"} 
+              />
+            </TouchableOpacity>
           </View>
         </View>
 
         {/* Contenido del evento */}
-        <View style={styles.contentContainer}>
+        <ThemedView style={styles.contentContainer} lightColor="#FFFFFF" darkColor="#000000">
           {/* Título */}
           <ThemedText style={styles.title}>{event.title}</ThemedText>
 
-          {/* Categorías */}
-          {event.categories && event.categories.length > 0 && (
-            <View style={styles.categoriesContainer}>
-              {event.categories.map((category, index) => (
-                <View key={index} style={styles.categoryChip}>
-                  <ThemedText style={styles.categoryText}>
-                    {category.name}
-                  </ThemedText>
-                </View>
-              ))}
-            </View>
-          )}
 
+               {/* Precio */}
+          <View style={styles.infoRow}>
+            <View style={styles.iconCircle}>
+              <Ionicons name="cash-outline" size={20} color="#FF8C00" />
+            </View>
+            <View style={styles.infoTextContainer}>
+              <ThemedText style={[styles.infoValue, { 
+                color: event.base_ticket_price === 0 ? '#4CAF50' : '#FF8C00',
+                fontWeight: '600'
+              }]}>
+                {formatPrice(event.base_ticket_price)}
+              </ThemedText>
+            </View>
+          </View>
+
+          
           {/* Fecha y hora */}
           <View style={styles.infoRow}>
-            <Ionicons name="calendar-outline" size={24} color="#FF8C00" />
+            <View style={styles.iconCircle}>
+              <Ionicons name="calendar-outline" size={20} color="#FF8C00" />
+            </View>
             <View style={styles.infoTextContainer}>
-              <ThemedText style={styles.infoLabel}>Fecha y hora</ThemedText>
               <ThemedText style={styles.infoValue}>
                 {formatDate(event.starts_at)}
               </ThemedText>
@@ -156,9 +166,10 @@ const EventDetailScreen = () => {
             onPress={openLocation}
             disabled={!event.event_location_url}
           >
-            <Ionicons name="location-outline" size={24} color="#FF8C00" />
+            <View style={styles.iconCircle}>
+              <Ionicons name="location-outline" size={20} color="#FF8C00" />
+            </View>
             <View style={styles.infoTextContainer}>
-              <ThemedText style={styles.infoLabel}>Ubicación</ThemedText>
               <ThemedText style={styles.infoValue}>
                 {event.event_location_name}
               </ThemedText>
@@ -169,94 +180,20 @@ const EventDetailScreen = () => {
               )}
             </View>
             {event.event_location_url && (
-              <Ionicons name="chevron-forward" size={20} color="#999" />
+              <Ionicons name="chevron-forward" size={20} color="#FF8C00" />
             )}
           </TouchableOpacity>
 
-          {/* Capacidad */}
-          <View style={styles.infoRow}>
-            <Ionicons name="people-outline" size={24} color="#FF8C00" />
-            <View style={styles.infoTextContainer}>
-              <ThemedText style={styles.infoLabel}>Capacidad</ThemedText>
-              <ThemedText style={styles.infoValue}>
-                {event.capacity} personas
-              </ThemedText>
-              {event.tickets_sold !== undefined && (
-                <ThemedText style={styles.infoSubValue}>
-                  {event.tickets_sold} tickets vendidos
-                </ThemedText>
-              )}
-            </View>
-          </View>
+     
 
-          {/* Descripción */}
-          <View style={styles.descriptionContainer}>
-            <ThemedText style={styles.sectionTitle}>Acerca del evento</ThemedText>
-            <ThemedText style={styles.description}>
-              {event.description}
+          {/* Botón de compra grande */}
+          <TouchableOpacity style={styles.mainBuyButton}>
+            <ThemedText style={styles.mainBuyButtonText}>
+              COMPRAR ENTRADA
             </ThemedText>
-          </View>
-
-          {/* Redes sociales */}
-          {event.artist_social_links && (
-            <View style={styles.socialLinksContainer}>
-              <ThemedText style={styles.sectionTitle}>Redes sociales</ThemedText>
-              <View style={styles.socialLinks}>
-                {event.artist_social_links.instagram && (
-                  <TouchableOpacity
-                    onPress={() =>
-                      Linking.openURL(event.artist_social_links!.instagram!)
-                    }
-                    style={styles.socialButton}
-                  >
-                    <Ionicons name="logo-instagram" size={24} color="#E4405F" />
-                    <ThemedText style={styles.socialText}>Instagram</ThemedText>
-                  </TouchableOpacity>
-                )}
-                {event.artist_social_links.facebook && (
-                  <TouchableOpacity
-                    onPress={() =>
-                      Linking.openURL(event.artist_social_links!.facebook!)
-                    }
-                    style={styles.socialButton}
-                  >
-                    <Ionicons name="logo-facebook" size={24} color="#1877F2" />
-                    <ThemedText style={styles.socialText}>Facebook</ThemedText>
-                  </TouchableOpacity>
-                )}
-                {event.artist_social_links.twitter && (
-                  <TouchableOpacity
-                    onPress={() =>
-                      Linking.openURL(event.artist_social_links!.twitter!)
-                    }
-                    style={styles.socialButton}
-                  >
-                    <Ionicons name="logo-twitter" size={24} color="#1DA1F2" />
-                    <ThemedText style={styles.socialText}>Twitter</ThemedText>
-                  </TouchableOpacity>
-                )}
-              </View>
-            </View>
-          )}
-        </View>
+          </TouchableOpacity>
+        </ThemedView>
       </ScrollView>
-
-      {/* Botón flotante de compra */}
-      <View style={styles.bottomBar}>
-        <View>
-          <ThemedText style={styles.bottomPrice}>
-            {formatPrice(event.base_ticket_price)}
-          </ThemedText>
-          {!event.is_free && (
-            <ThemedText style={styles.bottomSubtext}>por persona</ThemedText>
-          )}
-        </View>
-        <TouchableOpacity style={styles.buyButton}>
-          <ThemedText style={styles.buyButtonText}>
-            {event.is_free ? 'Registrarse' : 'Comprar ticket'}
-          </ThemedText>
-        </TouchableOpacity>
-      </View>
     </ThemedView>
   );
 };
@@ -271,10 +208,8 @@ const styles = StyleSheet.create({
   imageContainer: {
     position: 'relative',
     width: '100%',
-    height: 350,
+    height: 400,
     backgroundColor: '#000000',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   coverImage: {
     width: '100%',
@@ -284,141 +219,73 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 50,
     left: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
     borderRadius: 25,
     padding: 10,
     zIndex: 10,
   },
-  priceChip: {
+  topRightButtons: {
     position: 'absolute',
     top: 50,
     right: 20,
-    borderRadius: 20,
-    paddingHorizontal: 15,
-    paddingVertical: 8,
+    flexDirection: 'row',
+    gap: 10,
     zIndex: 10,
   },
-  priceText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
+  iconButton: {
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    borderRadius: 25,
+    padding: 10,
   },
   contentContainer: {
-    padding: 20,
+    padding: 16,
+    paddingBottom: 30,
   },
   title: {
-    fontSize: 28,
+    fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 15,
-  },
-  categoriesContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginBottom: 20,
-  },
-  categoryChip: {
-    backgroundColor: '#FF8C00',
-    borderRadius: 15,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    marginRight: 8,
-    marginBottom: 8,
-  },
-  categoryText: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    fontWeight: '600',
+    marginBottom: 16,
+    lineHeight: 26,
   },
   infoRow: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 20,
-    paddingBottom: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#2A2A2A',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  iconCircle: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   infoTextContainer: {
     flex: 1,
-    marginLeft: 15,
-  },
-  infoLabel: {
-    fontSize: 12,
-    opacity: 0.6,
-    marginBottom: 4,
+    marginLeft: 12,
   },
   infoValue: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 13,
+    fontWeight: '400',
   },
   infoSubValue: {
-    fontSize: 14,
-    opacity: 0.7,
-    marginTop: 4,
-  },
-  descriptionContainer: {
-    marginBottom: 25,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 12,
-  },
-  description: {
-    fontSize: 16,
-    lineHeight: 24,
-    opacity: 0.8,
-  },
-  socialLinksContainer: {
-    marginBottom: 30,
-  },
-  socialLinks: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-  socialButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#1A1A1A',
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    marginRight: 10,
-    marginBottom: 10,
-  },
-  socialText: {
-    marginLeft: 8,
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  bottomBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 15,
-    borderTopWidth: 1,
-    borderTopColor: '#2A2A2A',
-    backgroundColor: '#000000',
-  },
-  bottomPrice: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FF8C00',
-  },
-  bottomSubtext: {
     fontSize: 12,
     opacity: 0.6,
+    marginTop: 1,
   },
-  buyButton: {
+  mainBuyButton: {
     backgroundColor: '#FF8C00',
-    borderRadius: 25,
-    paddingHorizontal: 30,
-    paddingVertical: 15,
+    borderRadius: 50,
+    paddingVertical: 14,
+    paddingHorizontal: 40,
+    alignItems: 'center',
+    marginTop: 20,
   },
-  buyButtonText: {
+  mainBuyButtonText: {
     color: '#FFFFFF',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
+    letterSpacing: 0.5,
   },
   backButton: {
     marginTop: 20,

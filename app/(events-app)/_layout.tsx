@@ -1,15 +1,18 @@
 import CustomTabBar from '@/presentation/theme/components/CustomTabBar';
 import { ThemedView } from '@/presentation/theme/components/ThemedView';
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { useState } from 'react';
 
 export default function EventsAppLayout() {
   const [activeTab, setActiveTab] = useState('home');
+  const router = useRouter();
 
   const handleTabPress = (tabId: string) => {
+    setActiveTab(tabId);
     if (tabId === 'home') {
-      setActiveTab(tabId);
-      // Solo el home funciona por ahora
+      router.push('/(events-app)/(home)' as any);
+    } else if (tabId === 'favorites') {
+      router.push('/(events-app)/favorites' as any);
     }
   };
 
@@ -22,6 +25,12 @@ export default function EventsAppLayout() {
       >
         <Stack.Screen 
           name="(home)" 
+          options={{ 
+            headerShown: false
+          }} 
+        />
+        <Stack.Screen 
+          name="favorites/index" 
           options={{ 
             headerShown: false
           }} 
