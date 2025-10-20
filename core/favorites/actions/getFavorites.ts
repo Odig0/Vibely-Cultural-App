@@ -1,14 +1,11 @@
-import { API_CONFIG } from '@/constants/api';
+import { API_CONFIG, buildApiUrl, getAuthHeaders } from '@/config';
 import { Event } from '@/core/events/interfaces/event.interface';
 import { FavoriteResponse } from '@/core/favorites/interfaces/favorite.interface';
 
 export const getFavorites = async (token: string): Promise<Event[]> => {
-  const response = await fetch(`${API_CONFIG.BASE_URL}/favorites`, {
+  const response = await fetch(buildApiUrl(API_CONFIG.ENDPOINTS.FAVORITES), {
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
-    },
+    headers: getAuthHeaders(token),
   });
 
   if (!response.ok) {

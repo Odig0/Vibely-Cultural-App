@@ -1,12 +1,9 @@
-import { API_CONFIG } from '@/constants/api';
+import { API_CONFIG, buildApiUrl, getAuthHeaders } from '@/config';
 
 export const saveFavorite = async (eventId: string, token: string): Promise<void> => {
-  const response = await fetch(`${API_CONFIG.BASE_URL}/favorites/save`, {
+  const response = await fetch(buildApiUrl(API_CONFIG.ENDPOINTS.FAVORITES_SAVE), {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
-    },
+    headers: getAuthHeaders(token),
     body: JSON.stringify({
       event_id: eventId,
     }),

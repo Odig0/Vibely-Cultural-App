@@ -1,9 +1,9 @@
-import { API_CONFIG } from '@/constants/api';
+import { API_CONFIG, getApiEndpoint } from '@/config';
 import { Event } from '../interfaces/event.interface';
 
 export const getEventById = async (id: string): Promise<Event> => {
   try {
-    const response = await fetch(`${API_CONFIG.BASE_URL}/events/${id}`);
+    const response = await fetch(getApiEndpoint(API_CONFIG.ENDPOINTS.EVENT_BY_ID, id));
     
     if (!response.ok) {
       throw new Error('Error al obtener el evento');

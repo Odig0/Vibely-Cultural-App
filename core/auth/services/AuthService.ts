@@ -1,4 +1,4 @@
-import { API_CONFIG, buildApiUrl, getAuthHeaders } from '@/constants/api';
+import { API_CONFIG, buildApiUrl, getAuthHeaders } from '@/config';
 import { LoginResponse, LoginUserDto, RegisterUserDto, User } from '@/core/auth/interface/useAuthStore';
 
 /**

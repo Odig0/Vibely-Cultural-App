@@ -1,29 +1,19 @@
+import { API_CONFIG, buildApiUrl, getAuthHeaders } from '@/config';
 import { Event } from '@/core/events/interfaces/event.interface';
-
-const API_URL = 'https://app-cultural-606100971917.southamerica-east1.run.app';
 
 /**
  * Obtener todos los eventos
  */
 export const getEvents = async (token?: string): Promise<Event[]> => {
-  const url = `${API_URL}/events`;
+  const url = buildApiUrl(API_CONFIG.ENDPOINTS.EVENTS);
   console.log('🌐 getEvents - URL:', url);
   
   try {
     console.log('🚀 Enviando petición para obtener eventos...');
     
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-    };
-    
-    // Si hay token, agregarlo a los headers
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-    }
-    
     const response = await fetch(url, {
       method: 'GET',
-      headers,
+      headers: getAuthHeaders(token),
     });
 
     console.log('📡 Events - Status:', response.status, 'OK:', response.ok);
