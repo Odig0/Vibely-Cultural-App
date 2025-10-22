@@ -29,6 +29,10 @@ export const API_CONFIG = {
     FAVORITES_SAVE: '/favorites/save',
     FAVORITES_UNSAVE: (eventId: string) => `/favorites/unsave/${eventId}`,
     
+    // Tickets endpoints
+    TICKETS_PURCHASE: '/tickets/purchase',
+    TICKETS_MY_TICKETS: '/tickets/my-tickets',
+    
     // Profile endpoint (future)
     // PROFILE: '/profile',
   },

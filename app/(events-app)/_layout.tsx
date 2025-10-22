@@ -13,6 +13,8 @@ export default function EventsAppLayout() {
       router.push('/(events-app)/(home)' as any);
     } else if (tabId === 'favorites') {
       router.push('/(events-app)/favorites' as any);
+    } else if (tabId === 'ticket') {
+      router.push('/(events-app)/tickets' as any);
     }
   };
 

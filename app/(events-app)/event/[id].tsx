@@ -1,5 +1,7 @@
+import { purchaseTicket } from '@/core/tickets/actions/purchaseTicket';
 import { useEventById } from '@/presentation/events/hooks/useEventById';
 import { useFavorites } from '@/presentation/favorites/hooks/useFavorites';
+import { useAuthStore } from '@/presentation/auth/store/useAuthStrore';
 import { ThemedText } from '@/presentation/theme/components/ThemedText';
 import { ThemedView } from '@/presentation/theme/components/ThemedView';
 import { Ionicons } from '@expo/vector-icons';
@@ -18,15 +20,19 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useQueryClient } from '@tanstack/react-query';
 
 const EventDetailScreen = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data: event, isLoading, error } = useEventById(id || '');
   const { toggleFavorite, isFavorite, isSaving } = useFavorites();
+  const token = useAuthStore((state) => state.token);
+  const queryClient = useQueryClient();
 
   const isEventFavorite = id ? isFavorite(id) : false;
   const [showBuyModal, setShowBuyModal] = useState(false);
   const [ticketQuantity, setTicketQuantity] = useState(1);
+  const [isPurchasing, setIsPurchasing] = useState(false);
 
   const handleToggleFavorite = () => {
     if (id && event) {
@@ -134,22 +140,61 @@ const EventDetailScreen = () => {
     }
   };
 
-  const handleConfirmPurchase = () => {
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    setShowBuyModal(false);
+  const handleConfirmPurchase = async () => {
+    if (!id || !token) {
+      Alert.alert('Error', 'Debes iniciar sesión para comprar entradas');
+      return;
+    }
+
+    setIsPurchasing(true);
     
-    const total = (event?.base_ticket_price || 0) * ticketQuantity;
-    
-    Alert.alert(
-      '🎉 ¡Compra Exitosa!',
-      `Has comprado ${ticketQuantity} ${ticketQuantity === 1 ? 'entrada' : 'entradas'} por Bs ${total}.\n\n¡Nos vemos en el evento!`,
-      [
+    try {
+      // Realizar una única compra con la cantidad seleccionada
+      await purchaseTicket(
         {
-          text: 'OK',
-          onPress: () => setTicketQuantity(1) // Resetear cantidad
-        }
-      ]
-    );
+          event_id: id,
+          quantity: ticketQuantity,
+        },
+        token
+      );
+
+      // Feedback háptico de éxito
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      
+      // Invalidar cache de tickets para refrescar la lista
+      queryClient.invalidateQueries({ queryKey: ['tickets', 'my-tickets'] });
+      
+      setShowBuyModal(false);
+      
+      const total = (event?.base_ticket_price || 0) * ticketQuantity;
+      
+      Alert.alert(
+        '🎉 ¡Compra Exitosa!',
+        `Has comprado ${ticketQuantity} ${ticketQuantity === 1 ? 'entrada' : 'entradas'} por Bs ${total}.\n\n¡Nos vemos en el evento!`,
+        [
+          {
+            text: 'Ver Mis Entradas',
+            onPress: () => {
+              setTicketQuantity(1);
+              router.push('/(events-app)/tickets' as any);
+            }
+          },
+          {
+            text: 'OK',
+            onPress: () => setTicketQuantity(1)
+          }
+        ]
+      );
+    } catch (error) {
+      console.error('Error al comprar tickets:', error);
+      Alert.alert(
+        'Error',
+        'No se pudo completar la compra. Por favor, inténtalo de nuevo.',
+        [{ text: 'OK' }]
+      );
+    } finally {
+      setIsPurchasing(false);
+    }
   };
 
   const incrementQuantity = () => {
@@ -398,17 +443,23 @@ const EventDetailScreen = () => {
               <TouchableOpacity
                 style={styles.cancelButton}
                 onPress={() => setShowBuyModal(false)}
+                disabled={isPurchasing}
               >
                 <ThemedText style={styles.cancelButtonText}>Cancelar</ThemedText>
               </TouchableOpacity>
               
               <TouchableOpacity
-                style={styles.confirmButton}
+                style={[styles.confirmButton, isPurchasing && styles.confirmButtonDisabled]}
                 onPress={handleConfirmPurchase}
+                disabled={isPurchasing}
               >
-                <ThemedText style={styles.confirmButtonText}>
-                  Confirmar Compra
-                </ThemedText>
+                {isPurchasing ? (
+                  <ActivityIndicator color="#FFFFFF" />
+                ) : (
+                  <ThemedText style={styles.confirmButtonText}>
+                    Confirmar Compra
+                  </ThemedText>
+                )}
               </TouchableOpacity>
             </View>
           </ThemedView>
@@ -652,6 +703,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: '#FF8C00',
     alignItems: 'center',
+  },
+  confirmButtonDisabled: {
+    backgroundColor: '#CCCCCC',
+    opacity: 0.6,
   },
   confirmButtonText: {
     fontSize: 16,

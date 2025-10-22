@@ -56,14 +56,14 @@ const CustomTabBar = ({ activeTab, onTabPress }: Props) => {
               flex: 1,
               paddingVertical: 5,
             }}
-            disabled={tab.id !== 'home' && tab.id !== 'favorites'} // Home y Favoritos funcionan
+            disabled={tab.id === 'calendar'} // Solo calendario está deshabilitado
           >
             <Ionicons
               name={tab.icon}
               size={24}
               color={iconColor}
               style={{
-                opacity: (tab.id !== 'home' && tab.id !== 'favorites' && !isActive) ? 0.6 : 1,
+                opacity: (tab.id === 'calendar' && !isActive) ? 0.6 : 1,
               }}
             />
           </TouchableOpacity>
