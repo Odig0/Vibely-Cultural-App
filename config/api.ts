@@ -27,7 +27,7 @@ export const API_CONFIG = {
     // Favorites endpoints
     FAVORITES: '/favorites',
     FAVORITES_SAVE: '/favorites/save',
-    FAVORITES_REMOVE: (id: string) => `/favorites/${id}`,
+    FAVORITES_UNSAVE: (eventId: string) => `/favorites/unsave/${eventId}`,
     
     // Profile endpoint (future)
     // PROFILE: '/profile',

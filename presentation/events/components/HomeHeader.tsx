@@ -17,12 +17,15 @@ const HomeHeader = () => {
   };
 
   const handleNotificationPress = () => {
-    console.log('Notificaciones presionadas');
+    router.push('/(events-app)/notifications');
   };
 
   const handleProfilePress = () => {
     setMenuVisible(true);
   };
+
+  // Contador de notificaciones no leídas (hardcodeado)
+  const unreadNotificationsCount = 2;
 
   return (
     <View style={styles.headerContainer}>
@@ -44,6 +47,13 @@ const HomeHeader = () => {
       </View>
       <TouchableOpacity onPress={handleNotificationPress} style={styles.notificationButton}>
         <Ionicons name="notifications-outline" size={28} color="#FFFFFF" />
+        {unreadNotificationsCount > 0 && (
+          <View style={styles.notificationBadge}>
+            <ThemedText style={styles.notificationBadgeText}>
+              {unreadNotificationsCount > 9 ? '9+' : unreadNotificationsCount}
+            </ThemedText>
+          </View>
+        )}
       </TouchableOpacity>
 
       {/* Menú desplegable del perfil */}
@@ -112,6 +122,25 @@ const styles = StyleSheet.create({
   },
   notificationButton: {
     padding: 8,
+    position: 'relative',
+  },
+  notificationBadge: {
+    position: 'absolute',
+    top: 4,
+    right: 4,
+    backgroundColor: '#FF4444',
+    borderRadius: 10,
+    minWidth: 18,
+    height: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#000000',
+  },
+  notificationBadgeText: {
+    color: '#FFFFFF',
+    fontSize: 11,
+    fontWeight: 'bold',
   },
   modalOverlay: {
     flex: 1,
