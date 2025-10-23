@@ -1,26 +1,26 @@
 import { purchaseTicket } from '@/core/tickets/actions/purchaseTicket';
+import { useAuthStore } from '@/presentation/auth/store/useAuthStrore';
 import { useEventById } from '@/presentation/events/hooks/useEventById';
 import { useFavorites } from '@/presentation/favorites/hooks/useFavorites';
-import { useAuthStore } from '@/presentation/auth/store/useAuthStrore';
 import { ThemedText } from '@/presentation/theme/components/ThemedText';
 import { ThemedView } from '@/presentation/theme/components/ThemedView';
 import { Ionicons } from '@expo/vector-icons';
+import { useQueryClient } from '@tanstack/react-query';
 import * as Haptics from 'expo-haptics';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
-  Image,
-  Linking,
-  Modal,
-  ScrollView,
-  Share,
-  StyleSheet,
-  TouchableOpacity,
-  View,
+    ActivityIndicator,
+    Alert,
+    Image,
+    Linking,
+    Modal,
+    ScrollView,
+    Share,
+    StyleSheet,
+    TouchableOpacity,
+    View,
 } from 'react-native';
-import { useQueryClient } from '@tanstack/react-query';
 
 const EventDetailScreen = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -359,84 +359,88 @@ const EventDetailScreen = () => {
         onRequestClose={() => setShowBuyModal(false)}
       >
         <View style={styles.modalOverlay}>
-          <ThemedView style={styles.modalContent} lightColor="#FFFFFF" darkColor="#1A1A1A">
+          <ThemedView style={styles.modalContent} lightColor="#FFFFFF" darkColor="#1F1F1F">
             {/* Header del modal */}
             <View style={styles.modalHeader}>
               <ThemedText style={styles.modalTitle}>Comprar Entradas</ThemedText>
-              <TouchableOpacity onPress={() => setShowBuyModal(false)}>
-                <Ionicons name="close" size={28} color="#666" />
+              <TouchableOpacity 
+                onPress={() => setShowBuyModal(false)}
+                style={styles.closeButton}
+              >
+                <Ionicons name="close" size={28} color="#999" />
               </TouchableOpacity>
             </View>
 
-            {/* Información del evento */}
-            <View style={styles.eventInfo}>
-              <ThemedText style={styles.eventInfoTitle}>{event?.title}</ThemedText>
-              <ThemedText style={styles.eventInfoDate}>
-                {event?.starts_at ? formatDate(event.starts_at) : ''}
-              </ThemedText>
-            </View>
-
-            {/* Selector de cantidad */}
-            <View style={styles.quantityContainer}>
-              <ThemedText style={styles.quantityLabel}>Cantidad de entradas</ThemedText>
-              
-              <View style={styles.quantitySelector}>
-                <TouchableOpacity
-                  style={[styles.quantityButton, ticketQuantity === 1 && styles.quantityButtonDisabled]}
-                  onPress={decrementQuantity}
-                  disabled={ticketQuantity === 1}
-                >
-                  <Ionicons 
-                    name="remove" 
-                    size={24} 
-                    color={ticketQuantity === 1 ? "#999" : "#FF8C00"} 
-                  />
-                </TouchableOpacity>
-
-                <View style={styles.quantityDisplay}>
-                  <ThemedText style={styles.quantityNumber}>{ticketQuantity}</ThemedText>
+            {/* Card de tipo de entrada */}
+            <ThemedView style={styles.ticketTypeCard} lightColor="#F8F8F8" darkColor="#2A2A2A">
+              <View style={styles.ticketTypeHeader}>
+                <View style={styles.ticketTypeBadge}>
+                  <Ionicons name="ticket" size={20} color="#FF8C00" />
                 </View>
-
-                <TouchableOpacity
-                  style={[styles.quantityButton, ticketQuantity === 10 && styles.quantityButtonDisabled]}
-                  onPress={incrementQuantity}
-                  disabled={ticketQuantity === 10}
-                >
-                  <Ionicons 
-                    name="add" 
-                    size={24} 
-                    color={ticketQuantity === 10 ? "#999" : "#FF8C00"} 
-                  />
-                </TouchableOpacity>
+                <View style={styles.ticketTypeInfo}>
+                  <ThemedText style={styles.ticketTypeName}>Entrada General</ThemedText>
+                </View>
               </View>
-
-              {ticketQuantity === 10 && (
-                <ThemedText style={styles.maxQuantityText}>
-                  Máximo 10 entradas por compra
-                </ThemedText>
-              )}
-            </View>
-
-            {/* Resumen de compra */}
-            <View style={styles.summaryContainer}>
-              <View style={styles.summaryRow}>
-                <ThemedText style={styles.summaryLabel}>Precio unitario</ThemedText>
-                <ThemedText style={styles.summaryValue}>
-                  Bs {event?.base_ticket_price || 0}
+              
+              <View style={styles.ticketPriceRow}>
+                <ThemedText style={styles.ticketPriceLabel}>Valor</ThemedText>
+                <ThemedText style={styles.ticketPrice}>
+                  Bs {event?.base_ticket_price || 0}/-
                 </ThemedText>
               </View>
-              <View style={styles.summaryRow}>
-                <ThemedText style={styles.summaryLabel}>Cantidad</ThemedText>
-                <ThemedText style={styles.summaryValue}>{ticketQuantity}</ThemedText>
+
+              <View style={styles.ticketQuantityRow}>
+                <ThemedText style={styles.ticketQuantityLabel}>Cantidad</ThemedText>
+                <View style={styles.ticketQuantityControls}>
+                  <TouchableOpacity
+                    style={[styles.quantityControlButton, ticketQuantity === 1 && styles.quantityControlButtonDisabled]}
+                    onPress={decrementQuantity}
+                    disabled={ticketQuantity === 1}
+                  >
+                    <Ionicons 
+                      name="remove" 
+                      size={20} 
+                      color={ticketQuantity === 1 ? "#999" : "#FFFFFF"} 
+                    />
+                  </TouchableOpacity>
+
+                  <ThemedView style={styles.quantityValueContainer} lightColor="#FFFFFF" darkColor="#1F1F1F">
+                    <ThemedText style={styles.quantityValue}>{ticketQuantity}</ThemedText>
+                  </ThemedView>
+
+                  <TouchableOpacity
+                    style={[styles.quantityControlButton, ticketQuantity === 10 && styles.quantityControlButtonDisabled]}
+                    onPress={incrementQuantity}
+                    disabled={ticketQuantity === 10}
+                  >
+                    <Ionicons 
+                      name="add" 
+                      size={20} 
+                      color={ticketQuantity === 10 ? "#999" : "#FFFFFF"} 
+                    />
+                  </TouchableOpacity>
+                </View>
               </View>
-              <View style={styles.summaryDivider} />
-              <View style={styles.summaryRow}>
-                <ThemedText style={styles.summaryTotalLabel}>Total</ThemedText>
-                <ThemedText style={styles.summaryTotalValue}>
+            </ThemedView>
+
+            {ticketQuantity === 10 && (
+              <ThemedText style={styles.maxQuantityWarning}>
+                ⓘ Máximo 10 entradas por compra
+              </ThemedText>
+            )}
+
+            {/* Resumen de total */}
+            <ThemedView style={styles.totalSummaryCard} lightColor="#FFF5E6" darkColor="#2A2A2A">
+              <View style={styles.totalRow}>
+                <ThemedText style={styles.totalLabel}>Total a pagar</ThemedText>
+                <ThemedText style={styles.totalAmount}>
                   Bs {(event?.base_ticket_price || 0) * ticketQuantity}
                 </ThemedText>
               </View>
-            </View>
+              <ThemedText style={styles.totalDetails}>
+                {ticketQuantity} {ticketQuantity === 1 ? 'entrada' : 'entradas'} × Bs {event?.base_ticket_price || 0}
+              </ThemedText>
+            </ThemedView>
 
             {/* Botones de acción */}
             <View style={styles.modalActions}>
@@ -565,120 +569,163 @@ const styles = StyleSheet.create({
   // Estilos del modal
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
     justifyContent: 'flex-end',
   },
   modalContent: {
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
     padding: 24,
-    maxHeight: '80%',
+    paddingBottom: 32,
+    maxHeight: '85%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 8,
   },
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 24,
+    paddingBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E5E5',
   },
   modalTitle: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: 'bold',
+    letterSpacing: 0.3,
   },
-  eventInfo: {
-    backgroundColor: '#F5F5F5',
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 24,
+  closeButton: {
+    padding: 4,
   },
-  eventInfoTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 4,
+  ticketTypeCard: {
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 3,
   },
-  eventInfoDate: {
-    fontSize: 13,
-    opacity: 0.7,
-  },
-  quantityContainer: {
-    marginBottom: 24,
-  },
-  quantityLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 12,
-  },
-  quantitySelector: {
+  ticketTypeHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    gap: 20,
+    marginBottom: 16,
+    paddingBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E5E5',
   },
-  quantityButton: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+  ticketTypeBadge: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     backgroundColor: '#FFF5E6',
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: '#FF8C00',
+    marginRight: 12,
   },
-  quantityButtonDisabled: {
-    backgroundColor: '#F5F5F5',
-    borderColor: '#E0E0E0',
+  ticketTypeInfo: {
+    flex: 1,
   },
-  quantityDisplay: {
-    minWidth: 80,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    backgroundColor: '#F5F5F5',
-    borderRadius: 12,
-    alignItems: 'center',
-  },
-  quantityNumber: {
-    fontSize: 28,
+  ticketTypeName: {
+    fontSize: 18,
     fontWeight: 'bold',
-    color: '#FF8C00',
+    marginBottom: 4,
+    letterSpacing: 0.2,
   },
-  maxQuantityText: {
-    fontSize: 12,
+  ticketTypeSubtitle: {
+    fontSize: 13,
     opacity: 0.6,
-    textAlign: 'center',
-    marginTop: 8,
   },
-  summaryContainer: {
-    backgroundColor: '#F5F5F5',
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 24,
-  },
-  summaryRow: {
+  ticketPriceRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 16,
   },
-  summaryLabel: {
-    fontSize: 14,
+  ticketPriceLabel: {
+    fontSize: 15,
     opacity: 0.7,
   },
-  summaryValue: {
-    fontSize: 14,
+  ticketPrice: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  ticketQuantityRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  ticketQuantityLabel: {
+    fontSize: 15,
     fontWeight: '500',
   },
-  summaryDivider: {
-    height: 1,
-    backgroundColor: '#E0E0E0',
-    marginVertical: 12,
+  ticketQuantityControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
   },
-  summaryTotalLabel: {
+  quantityControlButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 8,
+    backgroundColor: '#FF8C00',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  quantityControlButtonDisabled: {
+    backgroundColor: '#CCCCCC',
+    opacity: 0.5,
+  },
+  quantityValueContainer: {
+    minWidth: 60,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#E5E5E5',
+    alignItems: 'center',
+  },
+  quantityValue: {
     fontSize: 18,
     fontWeight: 'bold',
   },
-  summaryTotalValue: {
-    fontSize: 18,
+  maxQuantityWarning: {
+    fontSize: 13,
+    opacity: 0.7,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  totalSummaryCard: {
+    borderRadius: 12,
+    padding: 18,
+    marginBottom: 24,
+    borderWidth: 1,
+    borderColor: '#FFD699',
+  },
+  totalRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+  totalLabel: {
+    fontSize: 15,
+    fontWeight: '500',
+    opacity: 0.8,
+  },
+  totalAmount: {
+    fontSize: 26,
     fontWeight: 'bold',
     color: '#FF8C00',
+  },
+  totalDetails: {
+    fontSize: 13,
+    opacity: 0.6,
   },
   modalActions: {
     flexDirection: 'row',
@@ -691,6 +738,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#E0E0E0',
     alignItems: 'center',
+    justifyContent: 'center',
   },
   cancelButtonText: {
     fontSize: 16,
@@ -698,11 +746,17 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   confirmButton: {
-    flex: 1,
+    flex: 1.5,
     paddingVertical: 16,
     borderRadius: 12,
     backgroundColor: '#FF8C00',
     alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#FF8C00',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
   },
   confirmButtonDisabled: {
     backgroundColor: '#CCCCCC',
@@ -712,6 +766,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#FFFFFF',
+    letterSpacing: 0.5,
   },
 });
 
