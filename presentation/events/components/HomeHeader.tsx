@@ -10,7 +10,6 @@ const HomeHeader = () => {
   const [menuVisible, setMenuVisible] = useState(false);
 
   const handleLogout = () => {
-    console.log('🚪 Cerrando sesión...');
     setMenuVisible(false);
     logout();
     router.replace('/auth/login');

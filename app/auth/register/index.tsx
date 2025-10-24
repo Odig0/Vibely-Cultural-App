@@ -28,27 +28,21 @@ const RegisterScreen = () => {
   });
 
   const onRegister = async () => {
-    console.log('🔵 onRegister iniciado');
     const { fullName, email, password } = form;
-    console.log('📝 Datos del formulario:', { fullName, email, password: '***' });
 
     if (!fullName.trim() || !email.trim() || !password.trim()) {
-      console.log('❌ Campos vacíos detectados');
       Alert.alert('Error', 'Por favor completa todos los campos');
       return;
     }
 
-    console.log('⏳ Iniciando registro...');
     setIsLoading(true);
     
     try {
       const wasSuccessful = await register(email, fullName, password);
-      console.log('✅ Resultado del registro:', wasSuccessful);
       
       setIsLoading(false);
 
       if (wasSuccessful) {
-        console.log('🎉 Registro exitoso, redirigiendo al login');
         Alert.alert(
           'Cuenta creada exitosamente',
           'Tu cuenta ha sido creada. Ahora puedes iniciar sesión.',

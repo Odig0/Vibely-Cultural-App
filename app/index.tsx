@@ -4,7 +4,7 @@ import { Redirect } from 'expo-router';
 export default function Index() {
   const { status } = useAuthStore();
 
-  console.log('Index component - Auth status:', status);
+  // console.log('Index component - Auth status:', status);
 
   // Si está autenticado, ir a la app principal
   if (status === 'authenticated') {

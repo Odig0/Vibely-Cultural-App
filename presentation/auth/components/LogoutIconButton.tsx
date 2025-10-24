@@ -9,7 +9,6 @@ const LogoutIconButton = () => {
   const { logout } = useAuthStore();
 
   const handleLogout = () => {
-    console.log('🚪 Cerrando sesión...');
     logout();
     router.replace('/auth/login');
   };

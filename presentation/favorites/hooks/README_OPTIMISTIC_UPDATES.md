@@ -117,13 +117,12 @@ Usuario toca → UI se actualiza inmediatamente → API en background → Confir
 Para ver los logs de optimistic updates:
 ```typescript
 // En onMutate
-console.log('⚡ Optimistic update:', eventId);
+
 
 // En onError
 console.error('❌ Rollback:', eventId);
 
 // En onSettled
-console.log('✅ Sincronizado:', eventId);
 ```
 
 ## 📱 Requisitos

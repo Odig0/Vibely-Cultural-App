@@ -64,14 +64,11 @@ const EventDetailScreen = () => {
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
           // Compartido con actividad específica
-          console.log('Compartido con:', result.activityType);
         } else {
           // Compartido
-          console.log('Evento compartido');
         }
       } else if (result.action === Share.dismissedAction) {
         // Cancelado
-        console.log('Compartir cancelado');
       }
     } catch (error) {
       Alert.alert(

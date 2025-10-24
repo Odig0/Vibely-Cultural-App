@@ -56,9 +56,7 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
   },
 
   register: async (email: string, userName: string, password: string): Promise<boolean> => {
-    console.log('🏪 Store register iniciado:', { email, userName, password: '***' });
     try {
-      console.log('⏳ Cambiando estado a loading...');
       set({ status: 'loading' });
 
       const registerData: RegisterUserDto = {
@@ -67,13 +65,10 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
         password: password,
       };
 
-      console.log('📡 Creando usuario...');
       const registerResponse = await AuthService.register(registerData);
-      console.log('✅ Usuario creado exitosamente:', registerResponse);
       
       // Después del registro exitoso, mantener estado unauthenticated
       // para que el usuario haga login manualmente
-      console.log('� Manteniendo estado unauthenticated para login manual');
       set({
         status: 'unauthenticated',
         token: undefined,
@@ -117,22 +112,18 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
   },
 
   logout: (): void => {
-    console.log('🚪 Iniciando logout...');
     
     try {
       // Limpiar AsyncStorage
-      console.log('🗑️ Eliminando token de AsyncStorage...');
       AsyncStorage.removeItem('auth_token');
       
       // Limpiar estado
-      console.log('🔄 Limpiando estado de autenticación...');
       set({
         status: 'unauthenticated',
         token: undefined,
         user: undefined,
       });
       
-      console.log('✅ Logout completado exitosamente');
     } catch (error) {
       console.error('💥 Error durante logout:', error);
       // Aún así limpiar el estado

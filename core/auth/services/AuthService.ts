@@ -11,28 +11,21 @@ export class AuthService {
    */
   static async login(credentials: LoginUserDto): Promise<LoginResponse> {
     const url = buildApiUrl(API_CONFIG.ENDPOINTS.LOGIN);
-    console.log('🌐 AuthService.login - URL:', url);
-    console.log('📦 AuthService.login - Datos:', { ...credentials, password: '***' });
-    
+
     try {
-      console.log('🚀 Enviando petición de login...');
       const response = await fetch(url, {
         method: 'POST',
         headers: getAuthHeaders(),
         body: JSON.stringify(credentials),
       });
 
-      console.log('📡 Login - Status:', response.status, 'OK:', response.ok);
-
       const data = await response.json();
-      console.log('📄 Login - Respuesta:', data);
 
       if (!response.ok) {
-        console.log('❌ Login falló:', data);
         throw new Error(data.message || 'Error en el login');
       }
 
-      console.log('✅ Login exitoso');
+
       return data as LoginResponse;
     } catch (error) {
       console.error('💥 Error en login:', error);
@@ -45,29 +38,23 @@ export class AuthService {
    */
   static async register(userData: RegisterUserDto): Promise<User> {
     const url = buildApiUrl(API_CONFIG.ENDPOINTS.REGISTER);
-    console.log('🌐 AuthService.register - URL:', url);
-    console.log('📦 AuthService.register - Datos:', userData);
     
     try {
-      console.log('🚀 Enviando petición de registro...');
       const response = await fetch(url, {
         method: 'POST',
         headers: getAuthHeaders(),
         body: JSON.stringify(userData),
       });
 
-      console.log('📡 Respuesta recibida - Status:', response.status);
-      console.log('📡 Respuesta recibida - OK:', response.ok);
+
 
       const data = await response.json();
-      console.log('📄 Datos de respuesta:', data);
 
       if (!response.ok) {
         console.error('❌ Respuesta no OK:', data);
         throw new Error(data.message || 'Error en el registro');
       }
 
-      console.log('✅ Usuario creado exitosamente');
       return data as User;
     } catch (error) {
       console.error('💥 Error en registro AuthService:', error);
@@ -80,28 +67,21 @@ export class AuthService {
    */
   static async requestPasswordReset(email: string): Promise<{ message: string }> {
     const url = buildApiUrl(API_CONFIG.ENDPOINTS.REQUEST_PASSWORD_RESET);
-    console.log('🌐 AuthService.requestPasswordReset - URL:', url);
-    console.log('📦 AuthService.requestPasswordReset - Email:', email);
     
     try {
-      console.log('🚀 Enviando petición de reset de contraseña...');
       const response = await fetch(url, {
         method: 'POST',
         headers: getAuthHeaders(),
         body: JSON.stringify({ email }),
       });
 
-      console.log('📡 Reset password - Status:', response.status, 'OK:', response.ok);
 
       const data = await response.json();
-      console.log('📄 Reset password - Respuesta:', data);
 
       if (!response.ok) {
-        console.log('❌ Reset password falló:', data);
         throw new Error(data.message || 'Error al solicitar reset de contraseña');
       }
 
-      console.log('✅ Reset password exitoso');
       return data;
     } catch (error) {
       console.error('💥 Error en reset password:', error);
